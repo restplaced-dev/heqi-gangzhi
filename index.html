@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>河憩缸誌｜養魚日常紀錄 App 原型</title>
+  <meta name="description" content="河憩缸誌是一款以魚缸日常、魚隻個體紀錄與輕社群互動為核心的養魚紀錄 App 原型。" />
+  <meta name="theme-color" content="#eef7f4" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">河憩寮 beta concept</p>
+        <h1>河憩缸誌</h1>
+      </div>
+      <button class="icon-btn" id="openQuickAdd" aria-label="快速新增">＋</button>
+    </header>
+
+    <main id="app" class="page"></main>
+
+    <nav class="bottom-nav" aria-label="主要導覽">
+      <button class="nav-item active" data-view="home"><span>⌂</span>首頁</button>
+      <button class="nav-item" data-view="tanks"><span>▧</span>魚缸</button>
+      <button class="nav-item" data-view="log"><span>＋</span>紀錄</button>
+      <button class="nav-item" data-view="social"><span>◎</span>社群</button>
+      <button class="nav-item" data-view="profile"><span>☰</span>我的</button>
+    </nav>
+  </div>
+
+  <dialog id="quickAddDialog" class="dialog-card">
+    <form method="dialog" class="dialog-body">
+      <button class="dialog-close" value="cancel" aria-label="關閉">×</button>
+      <h2>快速新增</h2>
+      <p>先把日常紀錄留下來，細節可以之後再補。</p>
+      <div class="quick-grid">
+        <button type="button" data-quick="餵食" class="quick-card">餵食</button>
+        <button type="button" data-quick="換水" class="quick-card">換水</button>
+        <button type="button" data-quick="拍照" class="quick-card">拍照</button>
+        <button type="button" data-quick="觀察" class="quick-card">觀察</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

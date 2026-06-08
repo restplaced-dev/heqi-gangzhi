@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'heqigangzhi-prototype-v1';
+const STORAGE_KEY = 'heqigangzhi-prototype-v2';
 
 const seedData = {
   tanks: [
@@ -159,10 +159,10 @@ function renderTanks() {
 }
 
 function renderLogForm() {
-  const types = ['觀察', '餵食', '換水', '拍照', '清潔', '新魚入缸', '異常紀錄'];
+  const types = ['觀察', '餵食', '換水', '拍照', '清潔', '新魚入缸', '狀態怪怪的'];
   return `
     <div class="section-head">
-      <div><h2>新增紀錄</h2><p>以日常為主；異常只做觀察，不提供用藥建議。</p></div>
+      <div><h2>新增紀錄</h2><p>以日常為主，先留下今天看到的狀態；細節可以之後再補。</p></div>
     </div>
     <section class="form-card">
       <div class="segmented">
@@ -171,16 +171,17 @@ function renderLogForm() {
       <form id="logForm">
         <input type="hidden" name="type" value="${escapeHtml(logType)}">
         <div class="field"><label>選擇魚缸</label><select name="tankName" required>${tankOptions()}</select></div>
-        <div class="field"><label>今天觀察到什麼？</label><textarea name="text" placeholder="例如：鼠魚晚上比較敢到前景吃飯，沒有明顯追逐壓力。" required></textarea></div>
+        <div class="field"><label>今天狀態</label><select name="mood"><option value="">不特別標記</option><option>吃得不錯</option><option>活動正常</option><option>比較害羞</option><option>互動變多</option><option>有點怪怪的</option><option>想再觀察</option></select></div>
+        <div class="field"><label>想補充什麼？（可留空）</label><textarea name="text" placeholder="例如：鼠魚比昨天敢到前景吃飯；或只按儲存，先留下一筆紀錄。"></textarea><p class="field-hint">備註不是考試卷，今天只想按一下也可以。</p></div>
         <div class="field"><label>公開到社群？</label><select name="share"><option value="no">先只存在私人日記</option><option value="yes">同步發成社群貼文</option></select></div>
         <button class="btn full" type="submit">儲存紀錄</button>
       </form>
     </section>
 
     <section class="card" style="margin-top:14px;">
-      <h3>異常紀錄原則</h3>
-      <p class="small muted">可記錄食慾、活動、呼吸、體態、體表與同缸變化。App 不會直接判定疾病，也不提供用藥劑量。需要時應整理照片、最近操作與水質，諮詢可信任的水族店家或水生動物獸醫。</p>
-      <div class="tag-list"><span class="tag warn">觀察優先</span><span class="tag gray">不替代診斷</span><span class="tag gray">不推用藥</span></div>
+      <h3>輕鬆紀錄小提醒</h3>
+      <p class="small muted">可以只記一句話：今天吃了什麼、最常待在哪裡、跟同缸魚的互動、缸子看起來穩不穩。先留下痕跡，之後回頭看才會知道牠的日常節奏。</p>
+      <div class="tag-list"><span class="tag warn">觀察優先</span><span class="tag gray">可留空</span><span class="tag gray">先存再補</span></div>
     </section>
   `;
 }
@@ -235,8 +236,8 @@ function renderProfile() {
 }
 
 function renderLogItem(log) {
-  const icons = { '餵食': '食', '換水': '水', '拍照': '照', '觀察': '目', '清潔': '掃', '新魚入缸': '新', '異常紀錄': '!' };
-  const danger = log.type === '異常紀錄' ? 'danger' : '';
+  const icons = { '餵食': '食', '換水': '水', '拍照': '照', '觀察': '目', '清潔': '掃', '新魚入缸': '新', '狀態怪怪的': '？', '異常紀錄': '!' };
+  const danger = log.type === '狀態怪怪的' || log.type === '異常紀錄' ? 'danger' : '';
   return `
     <div class="log-item">
       <div class="log-icon ${danger}">${icons[log.type] || '記'}</div>
@@ -282,12 +283,15 @@ function bindViewEvents() {
     logForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const data = new FormData(logForm);
+      const note = data.get('text').trim();
+      const mood = data.get('mood');
+      const entryText = [mood ? `狀態：${mood}。` : '', note || `先留下一筆${data.get('type')}紀錄。`].join('');
       const entry = {
         id: crypto.randomUUID(),
         tankName: data.get('tankName'),
         type: data.get('type'),
         date: '剛剛',
-        text: data.get('text').trim()
+        text: entryText
       };
       state.logs.unshift(entry);
       if (data.get('share') === 'yes') {
